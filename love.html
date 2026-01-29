@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deeply Heartfelt Note for Her</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Mitr:wght@300;500&display=swap');
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #fce4ec;
+            font-family: 'Sarabun', sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .message-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: inline-block;
+            border: 2px solid #f06292;
+            pointer-events: auto;
+        }
+        
+        #notebook-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            perspective: 2000px;
+        }
+        
+        .book {
+            width: 340px;
+            height: 520px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .page {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fff9c4;
+            padding: 25px;
+            box-sizing: border-box;
+            border-radius: 0 10px 10px 0;
+            box-shadow: inset 3px 0 10px rgba(0,0,0,0.1);
+            transform-origin: left;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            border: 1px solid #f0f0f0;
+        }
+
+        .page-1 { z-index: 5; }
+        .page-2 { z-index: 4; }
+        .page-3 { z-index: 3; }
+        .page-4 { z-index: 2; } 
+
+        .page.cover {
+            background: #d81b60;
+            color: white;
+            justify-content: center;
+            align-items: center;
+            z-index: 6;
+        }
+
+        .page.flipped {
+            transform: rotateY(-150deg);
+        }
+
+        .japanese-text {
+            font-family: serif;
+            font-size: 1.3rem;
+            color: #d81b60;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .thai-text {
+            font-size: 1.05rem;
+            color: #444;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .btn-open {
+            background: #f06292;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            margin-top: 15px;
+            display: none;
+            cursor: pointer;
+            pointer-events: auto;
+            border: none;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(240, 98, 146, 0.4);
+        }
+
+        .page-footer {
+            margin-top: auto;
+            text-align: right;
+            font-size: 0.75rem;
+            color: #999;
+            font-style: italic;
+        }
+
+        #heartCanvas {
+            width: 100%;
+            height: 280px;
+            margin-top: 5px;
+        }
+        .final-message {
+            opacity: 0;
+            transition: opacity 1.5s ease-in;
+            text-align: center;
+            color: #d81b60;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-top: -160px;
+            z-index: 10;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <div class="message-box" id="instruction">
+            <h1 class="text-xl font-bold text-pink-600">สู้ๆ นะคนเก่งของพี่! เดินมาหาพี่หน่อยครับ 🌸</h1>
+        </div>
+        <br>
+        <button id="openBookBtn" class="btn-open">เปิดความในใจของพี่ครับ 📖</button>
+    </div>
+
+    <div id="notebook-overlay">
+        <div class="book" id="myBook">
+            <!-- หน้าสุดท้าย: Heart Animation -->
+            <div class="page page-4" id="lastPage">
+                <h3 class="text-center font-bold text-pink-600 mb-2">หน้าสุดท้ายสำหรับแฟนสาวครับ</h3>
+                <canvas id="heartCanvas"></canvas>
+                <div id="loveNote" class="final-message">เค้ารักเธอมากๆๆๆๆ</div>
+                
+                <p class="thai-text text-center mt-36 text-sm italic font-bold text-pink-500">
+                    "เธอคือของขวัญที่ดีที่สุดในชีวิตพี่ครับ"
+                </p>
+                <button onclick="closeNotebook()" class="mt-auto w-full py-2 bg-pink-500 text-white rounded font-bold">กลับไปกอดพี่นะ</button>
+            </div>
+
+            <!-- หน้า 3: ความมั่นคงและการซัพพอร์ต -->
+            <div class="page page-3" onclick="this.classList.add('flipped'); startHeartAnimationIfLast();">
+                <p class="japanese-text">いつもあなたの味方だよ</p>
+                <p class="thai-text">ไม่ว่าข้างนอกโลกจะหมุนไปทิศทางไหน หรือใครจะทำให้เธอรู้สึกแย่...</p>
+                <p class="thai-text">จำไว้นะครับว่าที่นี่คือเซฟโซนของเธอเสมอ พี่จะคอยโอบกอดและรับฟังทุกอย่างด้วยความภูมิใจในตัวเธอครับ</p>
+                <div class="page-footer">กดตรงนี้เพื่อไปหน้าสุดท้ายนะแฟนสาว >></div>
+            </div>
+
+            <!-- หน้า 2: การเห็นคุณค่าในตัวเธอ -->
+            <div class="page page-2" onclick="this.classList.add('flipped')">
+                <p class="japanese-text">頑張っている姿、素敵だよ</p>
+                <p class="thai-text">ผลลัพธ์จะเป็นยังไงไม่สำคัญเลยครับ เพราะความหมายที่แท้จริงคือความตั้งใจที่เธอมอบให้มันต่างหาก</p>
+                <p class="thai-text">พี่เห็นเธออดทนและพยายามมาตลอด นั่นคือสิ่งที่ทำให้เธอพิเศษที่สุดสำหรับพี่ครับ เก่งมากแล้วนะคนดี</p>
+                <div class="page-footer">แตะเพื่ออ่านต่อครับ >></div>
+            </div>
+
+            <!-- หน้า 1: การรับรู้ความรู้สึก -->
+            <div class="page page-1" onclick="this.classList.add('flipped')">
+                <p class="japanese-text">心から、お疲れ様</p>
+                <p class="thai-text">วันนี้คงเหนื่อยมากเลยใช่ไหมครับ? ขอบคุณที่สู้มาจนถึงวินาทีนี้นะ</p>
+                <p class="thai-text">วางความกังวลทิ้งไว้ข้างนอกก่อนนะ แล้วค่อยๆ เปิดสมุดเล่มนี้อ่านดู... พี่ตั้งใจทำมาเพื่อเธอครับ</p>
+                <div class="page-footer">แตะเพื่อเปิดหน้าถัดไปนะครับ >></div>
+            </div>
+
+            <!-- หน้าปก -->
+            <div class="page cover" id="bookCover" onclick="this.classList.add('flipped')">
+                <div class="text-6xl mb-6">💖</div>
+                <h2 class="text-2xl font-bold font-mitr">ถึง... คนเก่งของพี่</h2>
+                <p class="mt-4 text-sm opacity-90">(แตะหน้าปกเพื่อรับกำลังใจจากพี่ครับ)</p>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const instruction = document.getElementById('instruction');
+        const openBookBtn = document.getElementById('openBookBtn');
+        const notebookOverlay = document.getElementById('notebook-overlay');
+        const heartCanvas = document.getElementById('heartCanvas');
+        const hctx = heartCanvas.getContext('2d');
+
+        let width, height;
+        let isWalking = false;
+        let reachedDestination = false;
+        let boy = { x: -100, y: 0, frame: 0 };
+        let girl = { x: 0, y: 0 };
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            boy.x = width * 0.2;
+            boy.y = height * 0.7;
+            girl.x = width * 0.8;
+            girl.y = height * 0.7;
+            heartCanvas.width = 300;
+            heartCanvas.height = 300;
+        }
+
+        window.addEventListener('resize', init);
+        init();
+
+        let heartProgress = 0;
+        let isAnimatingHeart = false;
+
+        function drawHeartFrame(progress) {
+            hctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+            hctx.save();
+            hctx.translate(heartCanvas.width / 2, heartCanvas.height / 2.2);
+            hctx.scale(1.8, -1.8); 
+            
+            hctx.beginPath();
+            hctx.strokeStyle = '#d81b60';
+            hctx.lineWidth = 3;
+            hctx.lineCap = 'round';
+            hctx.lineJoin = 'round';
+            
+            const points = 350; 
+            const currentPoints = Math.floor(points * progress);
+            
+            hctx.beginPath();
+            for (let i = 0; i <= currentPoints; i++) {
+                const t = (i / points) * Math.PI * 2;
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                if (i === 0) hctx.moveTo(x, y);
+                else hctx.lineTo(x, y);
+            }
+            hctx.stroke();
+            
+            if (progress >= 1) {
+                hctx.fillStyle = 'rgba(255, 105, 180, 0.45)';
+                hctx.fill();
+                document.getElementById('loveNote').style.opacity = '1';
+            }
+            hctx.restore();
+        }
+
+        function startHeartAnimationIfLast() {
+            if (!isAnimatingHeart) {
+                isAnimatingHeart = true;
+                heartProgress = 0;
+                animateHeart();
+            }
+        }
+
+        function animateHeart() {
+            if (heartProgress < 1) {
+                heartProgress += 0.007; 
+                drawHeartFrame(heartProgress);
+                requestAnimationFrame(animateHeart);
+            }
+        }
+
+        function drawHeartParticle(x, y, size, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.bezierCurveTo(x - size/2, y - size/2, x - size, y + size/3, x, y + size);
+            ctx.bezierCurveTo(x + size, y + size/3, x + size/2, y - size/2, x, y);
+            ctx.fill();
+        }
+
+        function drawFlower(x, y) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.strokeStyle = '#4caf50'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, 20); ctx.stroke();
+            ctx.fillStyle = '#ff4081';
+            for(let i=0; i<5; i++) {
+                ctx.rotate(Math.PI * 2 / 5);
+                ctx.beginPath(); ctx.ellipse(0, -10, 7, 10, 0, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.fillStyle = '#ffd54f';
+            ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+        }
+
+        function drawCharacter(x, y, isBoy, frame, hasFlower) {
+            ctx.save();
+            ctx.translate(x, y);
+            const bounce = Math.sin(frame * 0.2) * 5;
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 4;
+            const legMove = isWalking ? Math.sin(frame * 0.2) * 10 : 0;
+            ctx.beginPath();
+            ctx.moveTo(-10, 0); ctx.lineTo(-10 - legMove, 20);
+            ctx.moveTo(10, 0); ctx.lineTo(10 + legMove, 20);
+            ctx.stroke();
+            ctx.fillStyle = isBoy ? '#64b5f6' : '#f06292';
+            ctx.beginPath(); ctx.roundRect(-15, -45 + bounce, 30, 45, 10); ctx.fill();
+            ctx.fillStyle = '#ffe0b2';
+            ctx.beginPath(); ctx.arc(0, -60 + bounce, 20, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#333';
+            ctx.beginPath(); ctx.arc(-7, -62 + bounce, 2, 0, Math.PI * 2); ctx.arc(7, -62 + bounce, 2, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.arc(0, -55 + bounce, 5, 0.1 * Math.PI, 0.9 * Math.PI); ctx.stroke();
+            if (hasFlower) drawFlower(20, -35 + bounce);
+            ctx.restore();
+        }
+
+        function update() {
+            if (isWalking && !reachedDestination) {
+                boy.x += 3;
+                boy.frame++;
+                if (boy.x >= girl.x - 70) {
+                    isWalking = false;
+                    reachedDestination = true;
+                    instruction.innerHTML = '<h1 class="text-2xl font-bold text-pink-600">พี่อยู่นี่แล้วนะครับคนดี... ❤️</h1>';
+                    openBookBtn.style.display = 'inline-block';
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#e8f5e9';
+            ctx.fillRect(0, height * 0.7 + 20, width, height * 0.3);
+            drawCharacter(girl.x, girl.y, false, 0, false);
+            drawCharacter(boy.x, boy.y, true, boy.frame, reachedDestination);
+            if (reachedDestination) {
+                for(let i=0; i<3; i++) {
+                    const t = Date.now() * 0.002 + i;
+                    const hx = (girl.x + boy.x) / 2 + Math.sin(t) * 30;
+                    const hy = girl.y - 100 - (t % 1) * 100;
+                    drawHeartParticle(hx, hy, 10 + Math.sin(t)*5, `rgba(255, 64, 129, ${1 - (t%1)})`);
+                }
+            }
+            update();
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('mousedown', (e) => {
+            if (e.target.tagName !== 'BUTTON' && !reachedDestination) {
+                isWalking = true;
+                instruction.innerHTML = '<h1 class="text-xl font-bold text-pink-600">พี่กำลังรีบไปหาเธอครับ... 🏃‍♂️</h1>';
+            }
+        });
+
+        openBookBtn.addEventListener('click', () => {
+            notebookOverlay.style.display = 'flex';
+        });
+
+        function closeNotebook() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('flipped'));
+            heartProgress = 0;
+            isAnimatingHeart = false;
+            document.getElementById('loveNote').style.opacity = '0';
+            setTimeout(() => {
+                notebookOverlay.style.display = 'none';
+            }, 500);
+        }
+
+        draw();
+    </script>
+</body>
+</html>
