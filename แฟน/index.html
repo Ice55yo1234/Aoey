@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Infinity Journey - สำหรับเอย</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #050507;
+            --daisy-white: #ffffff;
+            --daisy-center: #ffd700;
+            --accent-pink: #ff4d8d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Mali', cursive;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .page {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .page.active { display: flex; }
+
+        .content-box {
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            pointer-events: auto;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #fff, var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .message {
+            font-size: 1.2rem;
+            line-height: 2;
+            margin-bottom: 2rem;
+            color: #efefef;
+        }
+
+        .btn-next {
+            background: white;
+            color: black;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: auto;
+        }
+
+        .btn-next:hover { transform: scale(1.05); background: var(--accent-pink); color: white; }
+
+        .daisy-hint {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--daisy-center);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: 1s;
+        }
+        
+        #final-text-overlay {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            text-align: center;
+            pointer-events: none;
+            width: 100%;
+        }
+
+        .final-msg {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 2.5rem;
+            opacity: 0;
+            color: white;
+            text-shadow: 0 0 20px rgba(0,0,0,0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="main-canvas"></canvas>
+
+    <div id="final-text-overlay">
+        <h2 id="finalText" class="final-msg">รักเบบี้ ที่สุดนะครับ</h2>
+    </div>
+
+    <div class="app-container">
+        <!-- Page 1 -->
+        <section class="page active" id="page1">
+            <div class="content-box">
+                <h1>The Journey</h1>
+                <p class="message">
+                    ถึง... <b>"เอย"</b> แฟนสาวคนเก่งของพี่<br>
+                    ถึงเราจะอยู่ไกลกัน แต่ในโลกใบนี้ที่พี่สร้างขึ้นมา<br>
+                    พี่จะอยู่ข้างๆ และดูแลหนูเสมอไม่มีวันไปไหน
+                </p>
+                <button class="btn-next" onclick="nextPage(2)">เดินทางต่อ</button>
+            </div>
+        </section>
+
+        <!-- Page 2 -->
+        <section class="page" id="page2">
+            <div class="content-box">
+                <h1>The Promise</h1>
+                <p class="message">
+                    เค้าสัญญาว่าจะรักและแคร์หนูให้ดีที่สุด<br>
+                    ในสายตาพี่... เอยคือความสดใสเดียวในชีวิต<br>
+                    รักหนูคนเดียวนะครับคนดี
+                </p>
+                <button class="btn-next" onclick="nextPage(3)">เข้าไปดูข้างในใจพี่</button>
+            </div>
+        </section>
+
+        <!-- Page 3 -->
+        <section class="page" id="page3">
+            <div class="content-box">
+                <h1>Eternal Garden</h1>
+                <p class="message">
+                    หน้าถัดไป... พี่เตรียมทุ่งดอกไม้ที่ไม่มีวันเหี่ยวเฉาไว้ให้<br>
+                    ลองสัมผัสหน้าจอดูนะ... ทุกดอกคือความคิดถึงของพี่<br>
+                    <b>พร้อมจะปลูกดอกไม้กับพี่ไหมคะ?</b>
+                </p>
+                <button class="btn-next" onclick="startDaisies()">เปิดทุ่งดอกเดซี่</button>
+            </div>
+        </section>
+
+        <!-- Page 4 -->
+        <section class="page" id="page4">
+            <div class="daisy-hint" id="daisyHint">ลองจิ้มที่หน้าจอรัวๆ ดูสิคะ (โชว์แค่ 3 ดอกนะ)</div>
+        </section>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('main-canvas');
+        const ctx = canvas.getContext('2d');
+        let flowers = [];
+        let particles = [];
+        let currentMode = 'stars';
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function createStars() {
+            particles = [];
+            for(let i=0; i<80; i++) {
+                particles.push({
+                    x: Math.random()*canvas.width,
+                    y: Math.random()*canvas.height,
+                    s: Math.random()*2,
+                    v: Math.random()*0.5 + 0.1
+                });
+            }
+        }
+        createStars();
+
+        class Daisy {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.size = 0;
+                this.maxSize = 35;
+                this.state = 'growing';
+                this.alpha = 0;
+                this.rotation = Math.random() * Math.PI;
+            }
+            draw() {
+                if(this.state === 'growing') {
+                    this.alpha += (1 - this.alpha) * 0.1;
+                    this.size += (this.maxSize - this.size) * 0.1;
+                } else {
+                    this.alpha += (0 - this.alpha) * 0.1;
+                    this.size += (0 - this.size) * 0.1;
+                }
+
+                if(this.alpha < 0.01 && this.state === 'fading') return false;
+
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.alpha;
+                
+                ctx.fillStyle = "white";
+                for(let i=0; i<10; i++) {
+                    ctx.rotate((Math.PI*2)/10);
+                    ctx.beginPath();
+                    ctx.ellipse(this.size*0.8, 0, this.size*0.8, this.size*0.3, 0, 0, Math.PI*2);
+                    ctx.fill();
+                }
+                ctx.beginPath();
+                ctx.fillStyle = "#ffd700";
+                ctx.arc(0,0, this.size*0.4, 0, Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+                return true;
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(5, 5, 7, 0.2)';
+            ctx.fillRect(0,0, canvas.width, canvas.height);
+
+            if(currentMode === 'stars') {
+                ctx.fillStyle = "white";
+                particles.forEach(p => {
+                    p.y -= p.v;
+                    if(p.y < 0) p.y = canvas.height;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
+                });
+            } else {
+                flowers = flowers.filter(f => f.draw());
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.nextPage = function(n) {
+            const current = document.querySelector('.page.active');
+            const next = document.getElementById(`page${n}`);
+            
+            gsap.to(current, { opacity: 0, scale: 0.9, duration: 0.5, onComplete: () => {
+                current.classList.remove('active');
+                next.classList.add('active');
+                gsap.fromTo(next, {opacity: 0, scale: 1.1}, {opacity: 1, scale: 1, duration: 0.8});
+            }});
+        };
+
+        window.startDaisies = function() {
+            nextPage(4);
+            currentMode = 'daisies';
+            document.getElementById('daisyHint').style.opacity = 1;
+            gsap.to("#finalText", {opacity: 1, y: -20, duration: 2, delay: 1});
+        };
+
+        function handleGlobalClick(e) {
+            if(currentMode !== 'daisies') return;
+            const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            if(x === 0 && y === 0) return;
+
+            const activeFlowers = flowers.filter(f => f.state === 'growing');
+            if(activeFlowers.length >= 3) {
+                activeFlowers[0].state = 'fading';
+            }
+            flowers.push(new Daisy(x, y));
+        }
+
+        window.addEventListener('mousedown', handleGlobalClick);
+        window.addEventListener('touchstart', (e) => {
+            handleGlobalClick(e);
+        });
+    </script>
+</body>
+</html>
