@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รักนี้มีเส้นทาง</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <canvas id="effectCanvas" aria-hidden="true"></canvas>
+
+    <div class="page">
+        <header class="hero">
+            <div class="hero-glow"></div>
+            <div class="hero-body">
+                <p class="eyebrow">ถึงคนที่ใช้หัวใจเป็นพิกัด</p>
+                <h1>เส้นทางหัวใจที่ส่งถึงเธอ</h1>
+                <p class="hero-copy">เส้นทางของเราถูกวาดไว้บนแผนที่ และทุกหัวใจที่ส่งไปคือคำสัญญาที่ไม่จาง</p>
+                <div class="hero-actions">
+                    <button class="primary" id="magicButton">เปิดจดหมายรัก</button>
+                    <button class="secondary" id="poemButton">อ่านบทกวี</button>
+                    <button class="secondary" id="promiseButton">คำสัญญาจากใจ</button>
+                    <button class="secondary" id="soundToggle">เสียงเปิด/ปิด</button>
+                </div>
+            </div>
+        </header>
+
+        <section class="status-grid">
+            <div class="status-card heart-count">
+                <span>หัวใจที่ส่งแล้ว</span>
+                <strong id="heartCount">0</strong>
+            </div>
+            <div class="status-card journey-stats">
+                <span>ระยะทางรัก</span>
+                <strong>552 กม.</strong>
+            </div>
+            <div class="status-card promise-state">
+                <span>คำสัญญา</span>
+                <strong>ไม่เคยเปลี่ยน</strong>
+            </div>
+        </section>
+
+        <section class="map-section">
+            <div class="map-card">
+                <div class="map-title">แผนที่ประเทศไทยของเรา</div>
+                <p class="map-description">เส้นทางหัวใจเดินทางจากขอนแก่นสู่ดอนเมือง พร้อมเอฟเฟกต์หัวใจชมพูที่ไหลผ่านเส้นทางรักอย่างต่อเนื่อง</p>
+                <div class="map-wrapper">
+                    <svg viewBox="0 0 720 320" class="route-map" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="mapGradient" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.24" />
+                                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.08" />
+                            </linearGradient>
+                            <filter id="glowFilter">
+                                <feGaussianBlur stdDeviation="8" result="blur" />
+                                <feMerge>
+                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <rect x="0" y="0" width="720" height="320" class="map-background" rx="32" ry="32" />
+                        <path class="map-shape" d="M116 56 C104 78 96 98 96 118 C96 140 102 160 116 178 C126 190 142 194 158 190 C182 184 206 174 232 170 C260 166 282 176 310 182 C340 188 372 180 396 164 C420 148 440 126 458 100 C470 82 482 66 498 52 C520 34 548 28 576 34 C596 38 611 56 620 78 C628 98 632 118 634 140 C636 160 634 180 628 200 C622 220 612 240 596 250 C580 260 560 262 542 258 C520 252 500 242 484 230 C468 218 456 204 442 190 C430 178 418 166 402 156 C388 148 370 144 352 146 C334 148 318 156 302 166 C278 182 254 200 226 208 C198 216 170 216 144 208 C120 200 104 178 98 154 C92 130 96 104 116 86 Z" />
+                        <path class="route-line" d="M180 214 C220 190 280 170 350 150 C420 130 470 120 520 98" />
+                        <circle class="city-point start-point" cx="180" cy="214" r="14" />
+                        <circle class="city-point end-point" cx="520" cy="98" r="14" />
+                        <text class="city-label" x="180" y="244">ขอนแก่น</text>
+                        <text class="city-label" x="520" y="78">ดอนเมือง</text>
+                        <text class="map-main-label" x="360" y="28">แฟนสาวที่รักที่สุด</text>
+                    </svg>
+                    <div class="route-heart-trail"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card-grid">
+            <article class="card message-card hidden" id="messageCard">
+                <h2>จดหมายรัก</h2>
+                <div class="text-block" id="loveMessage">กดปุ่มเพื่อรับข้อความจากใจ...</div>
+                <div class="card-actions">
+                    <button id="moreButton">ข้อความเพิ่ม</button>
+                    <button id="poemButtonAlt">บทกวี</button>
+                    <button id="promiseButtonAlt">คำสัญญา</button>
+                </div>
+            </article>
+
+            <article class="card poem-card hidden" id="poemCard">
+                <h2>บทกวี</h2>
+                <pre class="text-block" id="lovePoem"></pre>
+            </article>
+
+            <article class="card promise-card hidden" id="promiseCard">
+                <h2>คำสัญญา</h2>
+                <div class="text-block" id="lovePromise"></div>
+            </article>
+        </section>
+
+        <footer class="footer">
+            <p>เส้นทางความรักของเราไม่ต้องเหมาะที่สุด แค่มีเธอก็เพียงพอแล้ว</p>
+            <small>Powered by Love, Python & JavaScript</small>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
