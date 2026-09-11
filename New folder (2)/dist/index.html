@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The 9th Orbit — 9 Months Together</title>
+    
+    <!-- Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Serif+Thai:wght@300;400;600&display=swap" rel="stylesheet">
+    
+  <script type="module" crossorigin src="./assets/index-CWZHmW9u.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BH0wJhje.css">
+</head>
+<body>
+    
+    <!-- Audio Elements -->
+    <audio id="bg-music" loop>
+        <source src="/romantic-bgm.mp3" type="audio/mpeg">
+    </audio>
+    <div id="mute-btn" class="hidden">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path id="vol-icon" d="M11 5L6 9H2v6h4l5 4V5z"/>
+        </svg>
+    </div>
+
+    <!-- WebGL Canvas Container -->
+    <div id="webgl-container"></div>
+
+    <!-- UI LAYER: STAGE 1 (Gateway) -->
+    <div id="gateway" class="ui-layer">
+        <div class="gateway-content">
+            <p class="gateway-quote">"In a universe of billions, my favorite story began 9 months ago."</p>
+            <button id="start-btn">Open Our Universe ♡</button>
+        </div>
+    </div>
+
+    <!-- UI LAYER: STAGE 3 (Real-Time Love Continuum) -->
+    <div id="time-counter" class="ui-layer hidden-fade pointer-none">
+        <div class="counter-box">
+            <h2 class="counter-title">Every single second with you has been my happiest moment.</h2>
+            <h1 class="counter-main">9 Months</h1>
+            <p class="counter-sub" id="live-counter">000 Days | 0,000 Hours | 000,000 Minutes | 00,000,000 Seconds</p>
+        </div>
+    </div>
+
+    <!-- UI LAYER: CONSTELLATION TOOLTIPS -->
+    <div id="tooltip" class="tooltip hidden-fade pointer-none"></div>
+
+    <div id="instruction-ui" class="ui-layer hidden-fade pointer-none">
+        <div class="instruction-box">
+            <p>Explore the 9 Nebulae of Memories</p>
+            <div class="progress-bar"><div id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- UI LAYER: STAGE 4 (Hybrid DOM Letter Text) -->
+    <!-- This div will be precisely CSS-transformed to match the 3D Envelope Paper position via JS -->
+    <div id="hybrid-letter-container" class="hidden-fade pointer-none">
+        <div id="letter-content" class="paper-content">
+            <!-- Text injected here by TextDirector.js -->
+        </div>
+    </div>
+
+    <!-- UI LAYER: STAGE 5 (End Horizon Actions) -->
+    <div id="end-actions" class="ui-layer hidden-fade pointer-none">
+        <div class="actions-box">
+            <button id="btn-wish" class="pointer-auto">Make a Wish ✨</button>
+            <button id="btn-replay" class="pointer-auto">Replay Letter 📜</button>
+        </div>
+    </div>
+
+</body>
+</html>
